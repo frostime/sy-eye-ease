@@ -1,6 +1,8 @@
 <script lang="ts">
     import { createEventDispatcher } from "svelte";
 
+    import { unlock } from './svg';
+
     const dispatch = createEventDispatcher();
 
     export function unMaskScreen() {
@@ -10,10 +12,8 @@
 
 <div id="global-mask">
     <!-- 右上角的关闭按钮 -->
-    <div id="unmask" on:click={unMaskScreen}>
-        <svg class="b3-menu__icon"
-            ><use xlink:href="#iconClose" /></svg
-        >
+    <div id="unmask" on:click={unMaskScreen} on:keypress={() => {}}>
+        {@html unlock}
     </div>
 </div>
 
