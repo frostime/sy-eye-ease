@@ -8,11 +8,11 @@
   "frontends": ["desktop", "mobile-browser"],
   "displayName": {
     "en_US": "Ease You Eyes",
-    "zh_CN": "保护视力"
+    "zh_CN": "保护眼睛"
   },
   "description": {
     "en_US": "You need to protect your eyesight",
-    "zh_CN": "保护视力, 从思源做起"
+    "zh_CN": "保护眼睛, 从思源做起"
   },
   "readme": {
     "en_US": "README.md",
