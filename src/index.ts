@@ -1,10 +1,11 @@
 import {
+    Dialog,
     Plugin, showMessage,
 } from "siyuan";
 import "./index.scss";
 
 import Mask from "./mask.svelte";
-import Settings from "./libs/setting-panel.svelte";
+import SettingPanel from "./libs/setting-panel.svelte";
 import { time2String } from "./utils";
 
 const STORAGE_NAME = "eye-config";
@@ -48,6 +49,27 @@ export default class PluginSample extends Plugin {
             clearInterval(this.LockTimer);
         }
         this.saveData(STORAGE_NAME, this.data[STORAGE_NAME]);
+    }
+
+    openSetting(): void {
+        let dialog = new Dialog({
+            title: "SettingPannel",
+            content: `<div id="SettingPanel"></div>`,
+            width: "60%",
+            destroyCallback: (options) => {
+                console.log("destroyCallback", options);
+                //You must destroy the component when the dialog is closed
+                pannel.$destroy();
+            }
+        });
+        let pannel = new SettingPanel({
+            target: dialog.element.querySelector("#SettingPanel"),
+            props: {
+                enabled: this.data[STORAGE_NAME].enabled,
+                workTime: this.data[STORAGE_NAME].workTime,
+                lockTime: this.data[STORAGE_NAME].lockTime,
+            }
+        });
     }
 
     private initStatusBar() {

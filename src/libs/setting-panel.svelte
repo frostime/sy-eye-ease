@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import SettingItem from "./setting-item.svelte";
     import { showMessage } from "siyuan";
     import { onMount, onDestroy } from "svelte";
@@ -8,6 +8,11 @@
     onDestroy(() => {
         showMessage("Setting panel closed");
     });
+
+    export let enabled: number;
+    export let workTime: number;
+    export let lockTime: number;
+
 </script>
 
 <!--
@@ -16,24 +21,12 @@ with the same UI style in SiYuan
 -->
 
 <div class="config__tab-container">
-    <div data-type="Header" class="fn__flex b3-label">
-        <div class="fn_flex-1">
-            <h4>This setting panel is provided by a svelte component</h4>
-            <div class="b3-label__text">
-                <span class="fn__flex-1">
-                    See:
-                    <pre
-                        style="display: inline">/lib/setting-pannel.svelte</pre>
-                </span>
-            </div>
-        </div>
-    </div>
     <SettingItem
         type="checkbox"
         title="启用 / Enable"
         text="启用倒计时 / Enable countdown"
         settingKey="Checkbox"
-        settingValue={true}
+        settingValue={enabled}
         on:changed={(event) => {
             showMessage(
                 `Checkbox changed: ${event.detail.key} = ${event.detail.value}`
@@ -41,11 +34,11 @@ with the same UI style in SiYuan
         }}
     />
     <SettingItem
-        type="input"
+        type="number"
         title="工作时长 / Work time"
         text="秒 / seconds"
         settingKey="Input"
-        settingValue=""
+        settingValue={workTime}
         placeholder=""
         on:changed={(event) => {
             showMessage(
@@ -54,11 +47,11 @@ with the same UI style in SiYuan
         }}
     />
     <SettingItem
-        type="input"
-        title="工作时长 / Work time"
+        type="number"
+        title="锁屏时长 / Screen lock time"
         text="秒 / seconds"
         settingKey="Input"
-        settingValue=""
+        settingValue={lockTime}
         placeholder=""
         on:changed={(event) => {
             showMessage(
