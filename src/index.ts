@@ -49,7 +49,7 @@ export default class PluginSample extends Plugin {
         }, this.LockInterval);
 
         //2. 显示倒计时
-        this.status.innerHTML = `${time2String(this.LockTimeRemains)}`;
+        this.status.innerHTML = `${time2String(this.LockTimeRemains / 1000)}`;
         this.LockTimer = setInterval(() => {
             this.LockTimeRemains -= 1000;
             if (this.LockTimeRemains <= 0) {
