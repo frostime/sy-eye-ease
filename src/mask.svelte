@@ -5,13 +5,34 @@
 
     const dispatch = createEventDispatcher();
 
+    export let timeRemains = 10;
+
+    let timer = setInterval(() => {
+        timeRemains--;
+        if (timeRemains === 0) {
+            clearInterval(timer);
+            dispatch("unmask");
+        }
+    }, 1000);
+
+    $: if (timeRemains === 0) {
+        unMaskScreen();
+    }
+
     export function unMaskScreen() {
         dispatch("unmask");
+        clearInterval(timer);
     }
 </script>
 
 <div id="global-mask">
-    <!-- 右上角的关闭按钮 -->
+
+    <!-- 正中间的倒计时 -->
+    <div id="countdown">
+        {timeRemains}
+    </div>
+
+    <!-- 关闭按钮 -->
     <div id="unmask" on:click={unMaskScreen} on:keypress={() => {}}>
         {@html unlock}
     </div>
@@ -26,6 +47,15 @@
         bottom: 0;
         z-index: 9999;
         background-color: rgba(0, 0, 0, 1);
+    }
+    #countdown {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: rgb(220, 220, 220);
+        font-size: 100px;
+        font-weight: bold;
     }
     #unmask {
         position: absolute;
