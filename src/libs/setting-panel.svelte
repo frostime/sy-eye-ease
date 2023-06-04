@@ -1,7 +1,7 @@
 <script>
     import SettingItem from "./setting-item.svelte";
     import { showMessage } from "siyuan";
-    import { onMount, onDestroy } from 'svelte';
+    import { onMount, onDestroy } from "svelte";
     onMount(() => {
         showMessage("Setting panel opened");
     });
@@ -22,15 +22,16 @@ with the same UI style in SiYuan
             <div class="b3-label__text">
                 <span class="fn__flex-1">
                     See:
-                    <pre style="display: inline">/lib/setting-pannel.svelte</pre>
+                    <pre
+                        style="display: inline">/lib/setting-pannel.svelte</pre>
                 </span>
             </div>
         </div>
     </div>
     <SettingItem
         type="checkbox"
-        title="Checkbox"
-        text="This is a checkbox"
+        title="启用 / Enable"
+        text="启用倒计时 / Enable countdown"
         settingKey="Checkbox"
         settingValue={true}
         on:changed={(event) => {
@@ -41,11 +42,11 @@ with the same UI style in SiYuan
     />
     <SettingItem
         type="input"
-        title="Input"
-        text="This is an input"
+        title="工作时长 / Work time"
+        text="秒 / seconds"
         settingKey="Input"
         settingValue=""
-        placeholder="Input something"
+        placeholder=""
         on:changed={(event) => {
             showMessage(
                 `Input changed: ${event.detail.key} = ${event.detail.value}`
@@ -53,46 +54,15 @@ with the same UI style in SiYuan
         }}
     />
     <SettingItem
-        type="button"
-        title="Button"
-        text="This is a button"
-        settingKey="Button"
-        settingValue="Click me"
-        on:clicked={() => {
-            showMessage("Button clicked");
-        }}
-    />
-    <SettingItem
-        type="select"
-        title="Select"
-        text="This is a select"
-        settingKey="Select"
-        settingValue="left"
-        options={{
-            left: "Left",
-            center: "Center",
-            right: "Right",
-        }}
+        type="input"
+        title="工作时长 / Work time"
+        text="秒 / seconds"
+        settingKey="Input"
+        settingValue=""
+        placeholder=""
         on:changed={(event) => {
             showMessage(
-                `Select changed: ${event.detail.key} = ${event.detail.value}`
-            );
-        }}
-    />
-    <SettingItem
-        type="slider"
-        title="Slide"
-        text="This is a slide"
-        settingKey="Slide"
-        settingValue={50}
-        slider={{
-            min: 0,
-            max: 100,
-            step: 1,
-        }}
-        on:changed={(event) => {
-            showMessage(
-                `Slide changed: ${event.detail.key} = ${event.detail.value}`
+                `Input changed: ${event.detail.key} = ${event.detail.value}`
             );
         }}
     />

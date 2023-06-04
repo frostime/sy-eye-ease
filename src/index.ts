@@ -4,7 +4,13 @@ import {
 import "./index.scss";
 
 import Mask from "./mask.svelte";
+import Settings from "./libs/setting-panel.svelte";
 import { time2String } from "./utils";
+
+const STORAGE_NAME = "eye-config";
+const ENABLED = true;
+const WORK_TIME = 30; // seconds
+const LOCK_TIME = 5 * 60; // seconds
 
 let UnMaskScreenEvent: EventListener;
 export default class PluginSample extends Plugin {
@@ -17,9 +23,21 @@ export default class PluginSample extends Plugin {
     LockTimeRemains: number = 0;
     LockTimer: any;
 
-    async onload() {
+    onload() {
         UnMaskScreenEvent = () => this.doUnmaskScreen();
+
+        this.data[STORAGE_NAME] = {
+            enabled: ENABLED,
+            workTime: WORK_TIME,
+            lockTime: LOCK_TIME,
+        }
+
         this.initStatusBar();
+
+        this.loadData(STORAGE_NAME);
+
+        this.LockInterval = this.data[STORAGE_NAME].workTime * 1000;
+
         this.startLockCountdown();
     }
 
@@ -29,11 +47,12 @@ export default class PluginSample extends Plugin {
         if (this.LockTimer) {
             clearInterval(this.LockTimer);
         }
+        this.saveData(STORAGE_NAME, this.data[STORAGE_NAME]);
     }
 
     private initStatusBar() {
         this.status = document.createElement("div");
-        this.status.innerHTML = `${time2String(this.LockTimeRemains)}`;
+        this.status.innerHTML = `${time2String(0)}`;
 
         this.addStatusBar({
             element: this.status,
@@ -65,7 +84,7 @@ export default class PluginSample extends Plugin {
         this.mask = new Mask({
             target: this.maskDiv,
             props: {
-                timeRemains: 20,
+                timeRemains: this.data[STORAGE_NAME].lockTime,
             },
         });
         this.mask.$on("unmask", UnMaskScreenEvent);

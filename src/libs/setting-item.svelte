@@ -53,6 +53,16 @@
             bind:value={settingValue}
             on:change={changed}
         />
+    {:else if type === "number"}
+        <!-- Text Input -->
+        <input
+            class="b3-text-field fn__flex-center fn__size200"
+            id={settingKey}
+            {placeholder}
+            bind:value={settingValue}
+            on:change={changed}
+            type="number"
+        />
     {:else if type === "button"}
         <!-- Button Input -->
         <button
