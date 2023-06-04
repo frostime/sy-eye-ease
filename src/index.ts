@@ -20,6 +20,14 @@ export default class PluginSample extends Plugin {
         this.startLockCountdown();
     }
 
+    onunload(): void {
+        this.mask.$destroy();
+        document.body.removeChild(this.maskDiv);
+        if (this.LockTimer) {
+            clearInterval(this.LockTimer);
+        }
+    }
+
     private startLockCountdown() {
         this.LockTimeRemains = this.LockInterval;
         setTimeout(() => {
