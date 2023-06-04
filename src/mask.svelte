@@ -2,6 +2,7 @@
     import { createEventDispatcher } from "svelte";
 
     import { unlock } from './svg';
+    import { time2String } from './utils';
 
     const dispatch = createEventDispatcher();
 
@@ -20,18 +21,7 @@
         unMaskScreen();
     }
 
-    $: {
-        let hour = Math.floor(timeRemains / 3600);
-        let minute = Math.floor((timeRemains % 3600) / 60);
-        let second = (timeRemains % 60);
-        let timeArr = [];
-        if (hour > 0) {
-            timeArr.push(hour.toString().padStart(2, "0"));
-        }
-        timeArr.push(minute.toString().padStart(2, "0"));
-        timeArr.push(second.toString().padStart(2, "0"));
-        timeStr = timeArr.join(":");
-    }
+    $: timeStr = time2String(timeRemains);
 
     export function unMaskScreen() {
         dispatch("unmask");
