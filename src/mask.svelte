@@ -5,7 +5,8 @@
 
     const dispatch = createEventDispatcher();
 
-    export let timeRemains = 10;
+    export let timeRemains = 60 * 5; // 倒计时剩余时间，单位：秒
+    let timeStr: string;
 
     let timer = setInterval(() => {
         timeRemains--;
@@ -19,6 +20,19 @@
         unMaskScreen();
     }
 
+    $: {
+        let hour = Math.floor(timeRemains / 3600);
+        let minute = Math.floor((timeRemains % 3600) / 60);
+        let second = (timeRemains % 60);
+        let timeArr = [];
+        if (hour > 0) {
+            timeArr.push(hour.toString().padStart(2, "0"));
+        }
+        timeArr.push(minute.toString().padStart(2, "0"));
+        timeArr.push(second.toString().padStart(2, "0"));
+        timeStr = timeArr.join(":");
+    }
+
     export function unMaskScreen() {
         dispatch("unmask");
         clearInterval(timer);
@@ -29,7 +43,7 @@
 
     <!-- 正中间的倒计时 -->
     <div id="countdown">
-        {timeRemains}
+        {timeStr}
     </div>
 
     <!-- 关闭按钮 -->
