@@ -1,18 +1,18 @@
 {
-  "name": "plugin-sample-vite-svelte",
+  "name": "sy-eye-ease",
   "author": "frostime",
-  "url": "https://github.com/siyuan-note/plugin-sample-vite-svelte",
-  "version": "0.1.3",
+  "url": "https://github.com/frostime/sy-eye-ease",
+  "version": "0.0.1",
   "minAppVersion": "2.9.0",
   "backends": ["windows", "linux", "darwin"],
-  "frontends": ["desktop"],
+  "frontends": ["desktop", "mobile-browser"],
   "displayName": {
-    "en_US": "Plugin sample with vite and svelte",
-    "zh_CN": "插件样例 vite + svelte 版"
+    "en_US": "Ease You Eyes",
+    "zh_CN": "保护视力"
   },
   "description": {
-    "en_US": "SiYuan plugin sample with vite and svelte",
-    "zh_CN": "使用 vite 和 svelte 开发的思源插件样例"
+    "en_US": "You need to protect your eyesight",
+    "zh_CN": "保护视力, 从思源做起"
   },
   "readme": {
     "en_US": "README.md",
