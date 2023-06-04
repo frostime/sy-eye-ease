@@ -20,9 +20,8 @@ export default class PluginSample extends Plugin {
     mask: Mask;
     status: HTMLDivElement
 
-    LockInterval: number = 1000 * 20;
-    LockTimeRemains: number = 0;
-    LockTimer: any;
+    WorkTimeRemains: number = 0;
+    WorkTimer: any;
 
     onload() {
         UnMaskScreenEvent = () => this.doUnmaskScreen();
@@ -37,16 +36,14 @@ export default class PluginSample extends Plugin {
 
         this.loadData(STORAGE_NAME);
 
-        this.LockInterval = this.data[STORAGE_NAME].workTime * 1000;
-
         this.startLockCountdown();
     }
 
     onunload(): void {
         this.mask.$destroy();
         document.body.removeChild(this.maskDiv);
-        if (this.LockTimer) {
-            clearInterval(this.LockTimer);
+        if (this.WorkTimer) {
+            clearInterval(this.WorkTimer);
         }
         this.saveData(STORAGE_NAME, this.data[STORAGE_NAME]);
     }
@@ -84,19 +81,19 @@ export default class PluginSample extends Plugin {
 
     private startLockCountdown() {
         //1. X 秒后锁屏
-        this.LockTimeRemains = this.LockInterval;
+        this.WorkTimeRemains = this.data[STORAGE_NAME].workTime * 1000;
         setTimeout(() => {
             this.doMaskScreen();
-        }, this.LockInterval);
+        }, this.WorkTimeRemains);
 
         //2. 显示倒计时
-        this.status.innerHTML = `${time2String(this.LockTimeRemains / 1000)}`;
-        this.LockTimer = setInterval(() => {
-            this.LockTimeRemains -= 1000;
-            if (this.LockTimeRemains <= 0) {
-                this.LockTimeRemains = 0;
+        this.status.innerHTML = `${time2String(this.WorkTimeRemains / 1000)}`;
+        this.WorkTimer = setInterval(() => {
+            this.WorkTimeRemains -= 1000;
+            if (this.WorkTimeRemains <= 0) {
+                this.WorkTimeRemains = 0;
             }
-            this.status.innerHTML = `${time2String(this.LockTimeRemains / 1000)}`;
+            this.status.innerHTML = `${time2String(this.WorkTimeRemains / 1000)}`;
         }, 1000);
     }
 
@@ -112,8 +109,8 @@ export default class PluginSample extends Plugin {
         this.mask.$on("unmask", UnMaskScreenEvent);
         document.body.appendChild(this.maskDiv);
         //close timer
-        if (this.LockTimer) {
-            clearInterval(this.LockTimer);
+        if (this.WorkTimer) {
+            clearInterval(this.WorkTimer);
         }
     }
 
