@@ -35,13 +35,16 @@ export default class PluginSample extends Plugin {
         this.initStatusBar();
 
         this.loadData(STORAGE_NAME);
+        console.log("DataConfig", this.data[STORAGE_NAME]);
 
         this.startLockCountdown();
     }
 
     onunload(): void {
-        this.mask.$destroy();
-        document.body.removeChild(this.maskDiv);
+        if (this.maskDiv) {
+            this.mask.$destroy();
+            this.maskDiv.remove();
+        }
         if (this.WorkTimer) {
             clearInterval(this.WorkTimer);
         }
@@ -53,8 +56,7 @@ export default class PluginSample extends Plugin {
             title: "SettingPannel",
             content: `<div id="SettingPanel"></div>`,
             width: "60%",
-            destroyCallback: (options) => {
-                console.log("destroyCallback", options);
+            destroyCallback: () => {
                 //You must destroy the component when the dialog is closed
                 pannel.$destroy();
             }
@@ -62,11 +64,17 @@ export default class PluginSample extends Plugin {
         let pannel = new SettingPanel({
             target: dialog.element.querySelector("#SettingPanel"),
             props: {
-                enabled: this.data[STORAGE_NAME].enabled,
-                workTime: this.data[STORAGE_NAME].workTime,
-                lockTime: this.data[STORAGE_NAME].lockTime,
+                storage: this.data[STORAGE_NAME]
             }
         });
+        pannel.$on("changed", ({ detail }) => { 
+            // console.log("onSettingChanged", detail);
+            dialog.destroy();
+            this.data[STORAGE_NAME] = detail;
+            this.saveData(STORAGE_NAME, this.data[STORAGE_NAME]);
+            // console.log("DataConfig", this.data[STORAGE_NAME]);
+        });
+
     }
 
     private initStatusBar() {
