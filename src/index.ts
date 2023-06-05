@@ -86,9 +86,12 @@ export default class PluginSample extends Plugin {
         this.status = document.createElement("div");
         this.status.innerHTML = `${time2String(0)}`;
 
-        this.addStatusBar({
+        let statusBar = this.addStatusBar({
             element: this.status,
             position: "right",
+        });
+        statusBar.addEventListener("click", () => {
+            this.openSetting();
         });
     }
 
@@ -145,7 +148,7 @@ export default class PluginSample extends Plugin {
     }
 
     private doUnmaskScreen() {
-        showMessage("unmask");
+        showMessage("欢迎回来, 继续加油吧!", 5000);
         if (this.maskDiv) {
             this.mask.$destroy();
             document.body.removeChild(this.maskDiv);
