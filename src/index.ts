@@ -23,7 +23,7 @@ export default class PluginSample extends Plugin {
     WorkTimeRemains: number = 0;
     WorkTimer: any;
 
-    onload() {
+    async onload() {
         UnMaskScreenEvent = () => this.doUnmaskScreen();
 
         this.data[STORAGE_NAME] = {
@@ -34,10 +34,13 @@ export default class PluginSample extends Plugin {
 
         this.initStatusBar();
 
-        this.loadData(STORAGE_NAME);
+        await this.loadData(STORAGE_NAME);
         console.log("DataConfig", this.data[STORAGE_NAME]);
+        this.status.innerHTML = `${time2String(this.data[STORAGE_NAME].workTime)}`;
 
-        this.startLockCountdown();
+        if (this.data[STORAGE_NAME].enabled) {
+            this.startLockCountdown();
+        }
     }
 
     onunload(): void {
