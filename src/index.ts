@@ -8,7 +8,7 @@ import Mask from "./mask.svelte";
 import SettingPanel from "./libs/setting-panel.svelte";
 import { time2String } from "./utils";
 
-const STORAGE_NAME = "eye-config";
+const STORAGE_NAME = "eye-config.json";
 const ENABLED = true;
 const WORK_TIME = 30; // seconds
 const LOCK_TIME = 5 * 60; // seconds
