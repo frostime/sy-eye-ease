@@ -1,0 +1,22 @@
+{
+    "name": "Ease Your Eyes",
+    "msgUnlock": "Welcome back!",
+    "setting": {
+        "enabled": {
+            "title": "Enable Function",
+            "text": "Enable Countdown"
+        },
+        "workTime": {
+            "title": "Work Duration",
+            "text": "Screen-on Time, in seconds"
+        },
+        "lockTime": {
+            "title": "Screen-off Duration",
+            "text": "In seconds"
+        },
+        "save": {
+            "title": "Save Settings",
+            "text": ""
+        }
+    }
+}

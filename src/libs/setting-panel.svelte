@@ -1,11 +1,11 @@
 <script lang="ts">
     import SettingItem from "./setting-item.svelte";
-    import { showMessage } from "siyuan";
     import { onMount, onDestroy, createEventDispatcher } from "svelte";
 
     const distpatch = createEventDispatcher();
 
     export let storage: { [key: string]: any };
+    export let i18n: any;
     let enabled: number;
     let workTime: number;
     let lockTime: number;
@@ -16,7 +16,7 @@
         lockTime = storage["lockTime"];
     });
     onDestroy(() => {
-        showMessage("Setting panel closed");
+        // showMessage("Setting panel closed");
     });
     function onChanged(event: CustomEvent) {
         let key = event.detail.key;
@@ -50,16 +50,16 @@ with the same UI style in SiYuan
 <div class="config__tab-container">
     <SettingItem
         type="checkbox"
-        title="启用"
-        text="启用倒计时"
+        title={i18n.enabled.title}
+        text={i18n.enabled.text}
         settingKey="enabled"
         settingValue={enabled}
         on:changed={onChanged}
     />
     <SettingItem
         type="number"
-        title="工作时长"
-        text="秒"
+        title={i18n.workTime.title}
+        text={i18n.workTime.text}
         settingKey="workTime"
         settingValue={workTime}
         placeholder=""
@@ -67,8 +67,8 @@ with the same UI style in SiYuan
     />
     <SettingItem
         type="number"
-        title="锁屏时长"
-        text="秒"
+        title={i18n.lockTime.title}
+        text={i18n.lockTime.text}
         settingKey="lockTime"
         settingValue={lockTime}
         placeholder=""
@@ -76,10 +76,10 @@ with the same UI style in SiYuan
     />
     <SettingItem
         type="button"
-        title="保存"
-        text="保存设置"
+        title=""
+        text={i18n.save.text}
         settingKey="Save"
-        settingValue="保存设置"
+        settingValue={i18n.save.title}
         on:clicked={doUpdateSetting}
     />
 </div>

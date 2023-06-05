@@ -55,7 +55,7 @@ export default class PluginSample extends Plugin {
 
     openSetting(): void {
         let dialog = new Dialog({
-            title: "保护眼睛",
+            title: this.i18n.name,
             content: `<div id="SettingPanel"></div>`,
             width: "60%",
             destroyCallback: () => {
@@ -66,7 +66,8 @@ export default class PluginSample extends Plugin {
         let pannel = new SettingPanel({
             target: dialog.element.querySelector("#SettingPanel"),
             props: {
-                storage: this.data[STORAGE_NAME]
+                storage: this.data[STORAGE_NAME],
+                i18n: this.i18n.setting
             }
         });
         pannel.$on("changed", ({ detail }) => { 
@@ -129,7 +130,6 @@ export default class PluginSample extends Plugin {
     }
 
     private doMaskScreen() {
-        showMessage("休息一下吧！", 5000);
         this.maskDiv = document.createElement("div");
         this.mask = new Mask({
             target: this.maskDiv,
@@ -146,7 +146,7 @@ export default class PluginSample extends Plugin {
     }
 
     private doUnmaskScreen() {
-        showMessage("欢迎回来, 继续加油吧!", 5000);
+        showMessage(this.i18n.msgUnlock, 5000);
         if (this.maskDiv) {
             this.mask.$destroy();
             document.body.removeChild(this.maskDiv);
