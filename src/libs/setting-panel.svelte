@@ -1,13 +1,45 @@
-<script>
+<script lang="ts">
     import SettingItem from "./setting-item.svelte";
-    import { showMessage } from "siyuan";
-    import { onMount, onDestroy } from 'svelte';
+    import { onMount, onDestroy, createEventDispatcher } from "svelte";
+
+    const distpatch = createEventDispatcher();
+
+    export let storage: { [key: string]: any };
+    export let i18n: any;
+    let enabled: number;
+    let workTime: number;
+    let lockTime: number;
+
     onMount(() => {
-        showMessage("Setting panel opened");
+        enabled = storage["enabled"];
+        workTime = storage["workTime"];
+        lockTime = storage["lockTime"];
     });
     onDestroy(() => {
-        showMessage("Setting panel closed");
+        // showMessage("Setting panel closed");
     });
+    function onChanged(event: CustomEvent) {
+        let key = event.detail.key;
+        let value = event.detail.value;
+        switch (key) {
+            case "enabled":
+                enabled = value;
+                break;
+            case "workTime":
+                workTime = value;
+                break;
+            case "lockTime":
+                lockTime = value;
+                break;
+        }
+    }
+    function doUpdateSetting() {
+        distpatch("changed", {
+            enabled: enabled,
+            workTime: workTime,
+            lockTime: lockTime,
+        });
+    }
 </script>
 
 <!--
@@ -16,84 +48,38 @@ with the same UI style in SiYuan
 -->
 
 <div class="config__tab-container">
-    <div data-type="Header" class="fn__flex b3-label">
-        <div class="fn_flex-1">
-            <h4>This setting panel is provided by a svelte component</h4>
-            <div class="b3-label__text">
-                <span class="fn__flex-1">
-                    See:
-                    <pre style="display: inline">/lib/setting-pannel.svelte</pre>
-                </span>
-            </div>
-        </div>
-    </div>
     <SettingItem
         type="checkbox"
-        title="Checkbox"
-        text="This is a checkbox"
-        settingKey="Checkbox"
-        settingValue={true}
-        on:changed={(event) => {
-            showMessage(
-                `Checkbox changed: ${event.detail.key} = ${event.detail.value}`
-            );
-        }}
+        title={i18n.enabled.title}
+        text={i18n.enabled.text}
+        settingKey="enabled"
+        settingValue={enabled}
+        on:changed={onChanged}
     />
     <SettingItem
-        type="input"
-        title="Input"
-        text="This is an input"
-        settingKey="Input"
-        settingValue=""
-        placeholder="Input something"
-        on:changed={(event) => {
-            showMessage(
-                `Input changed: ${event.detail.key} = ${event.detail.value}`
-            );
-        }}
+        type="number"
+        title={i18n.workTime.title}
+        text={i18n.workTime.text}
+        settingKey="workTime"
+        settingValue={workTime}
+        placeholder=""
+        on:changed={onChanged}
+    />
+    <SettingItem
+        type="number"
+        title={i18n.lockTime.title}
+        text={i18n.lockTime.text}
+        settingKey="lockTime"
+        settingValue={lockTime}
+        placeholder=""
+        on:changed={onChanged}
     />
     <SettingItem
         type="button"
-        title="Button"
-        text="This is a button"
-        settingKey="Button"
-        settingValue="Click me"
-        on:clicked={() => {
-            showMessage("Button clicked");
-        }}
-    />
-    <SettingItem
-        type="select"
-        title="Select"
-        text="This is a select"
-        settingKey="Select"
-        settingValue="left"
-        options={{
-            left: "Left",
-            center: "Center",
-            right: "Right",
-        }}
-        on:changed={(event) => {
-            showMessage(
-                `Select changed: ${event.detail.key} = ${event.detail.value}`
-            );
-        }}
-    />
-    <SettingItem
-        type="slider"
-        title="Slide"
-        text="This is a slide"
-        settingKey="Slide"
-        settingValue={50}
-        slider={{
-            min: 0,
-            max: 100,
-            step: 1,
-        }}
-        on:changed={(event) => {
-            showMessage(
-                `Slide changed: ${event.detail.key} = ${event.detail.value}`
-            );
-        }}
+        title=""
+        text={i18n.save.text}
+        settingKey="Save"
+        settingValue={i18n.save.title}
+        on:clicked={doUpdateSetting}
     />
 </div>
