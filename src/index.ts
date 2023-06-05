@@ -49,15 +49,13 @@ export default class PluginSample extends Plugin {
             this.mask.$destroy();
             this.maskDiv.remove();
         }
-        if (this.WorkIntervalTimer) {
-            clearInterval(this.WorkIntervalTimer);
-        }
+        this.resetAll();
         this.saveData(STORAGE_NAME, this.data[STORAGE_NAME]);
     }
 
     openSetting(): void {
         let dialog = new Dialog({
-            title: "SettingPannel",
+            title: "保护眼睛",
             content: `<div id="SettingPanel"></div>`,
             width: "60%",
             destroyCallback: () => {
