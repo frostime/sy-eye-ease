@@ -10,8 +10,8 @@ import { time2String } from "./utils";
 
 const STORAGE_NAME = "eye-config.json";
 const ENABLED = true;
-const WORK_TIME = 30; // seconds
-const LOCK_TIME = 5 * 60; // seconds
+const WORK_TIME = 30 * 60; // seconds
+const LOCK_TIME = 3 * 60; // seconds
 
 let UnMaskScreenEvent: EventListener;
 export default class PluginSample extends Plugin {
@@ -21,7 +21,8 @@ export default class PluginSample extends Plugin {
     status: HTMLDivElement
 
     WorkTimeRemains: number = 0;
-    WorkTimer: any;
+    WorkTimeoutTimer: any;
+    WorkIntervalTimer: any;
 
     async onload() {
         UnMaskScreenEvent = () => this.doUnmaskScreen();
@@ -38,9 +39,9 @@ export default class PluginSample extends Plugin {
         console.log("DataConfig", this.data[STORAGE_NAME]);
         this.status.innerHTML = `${time2String(this.data[STORAGE_NAME].workTime)}`;
 
-        if (this.data[STORAGE_NAME].enabled) {
-            this.startLockCountdown();
-        }
+        this.startLockCountdown();
+
+        this.saveData(STORAGE_NAME, this.data[STORAGE_NAME]);
     }
 
     onunload(): void {
@@ -48,8 +49,8 @@ export default class PluginSample extends Plugin {
             this.mask.$destroy();
             this.maskDiv.remove();
         }
-        if (this.WorkTimer) {
-            clearInterval(this.WorkTimer);
+        if (this.WorkIntervalTimer) {
+            clearInterval(this.WorkIntervalTimer);
         }
         this.saveData(STORAGE_NAME, this.data[STORAGE_NAME]);
     }
@@ -75,7 +76,8 @@ export default class PluginSample extends Plugin {
             dialog.destroy();
             this.data[STORAGE_NAME] = detail;
             this.saveData(STORAGE_NAME, this.data[STORAGE_NAME]);
-            // console.log("DataConfig", this.data[STORAGE_NAME]);
+            this.resetAll();
+            this.startLockCountdown();
         });
 
     }
@@ -90,16 +92,33 @@ export default class PluginSample extends Plugin {
         });
     }
 
+    /**
+     * 停止所有计时器
+     */
+    private resetAll() {
+        if (this.WorkTimeoutTimer) {
+            clearTimeout(this.WorkTimeoutTimer);
+        }
+        if (this.WorkIntervalTimer) {
+            clearInterval(this.WorkIntervalTimer);
+        }
+        this.status.innerHTML = `${time2String(this.data[STORAGE_NAME].workTime)}`;
+    }
+
     private startLockCountdown() {
+        if (!this.data[STORAGE_NAME].enabled) {
+            return;
+        }
+
         //1. X 秒后锁屏
         this.WorkTimeRemains = this.data[STORAGE_NAME].workTime * 1000;
-        setTimeout(() => {
+        this.WorkTimeoutTimer = setTimeout(() => {
             this.doMaskScreen();
         }, this.WorkTimeRemains);
 
         //2. 显示倒计时
         this.status.innerHTML = `${time2String(this.WorkTimeRemains / 1000)}`;
-        this.WorkTimer = setInterval(() => {
+        this.WorkIntervalTimer = setInterval(() => {
             this.WorkTimeRemains -= 1000;
             if (this.WorkTimeRemains <= 0) {
                 this.WorkTimeRemains = 0;
@@ -120,8 +139,8 @@ export default class PluginSample extends Plugin {
         this.mask.$on("unmask", UnMaskScreenEvent);
         document.body.appendChild(this.maskDiv);
         //close timer
-        if (this.WorkTimer) {
-            clearInterval(this.WorkTimer);
+        if (this.WorkIntervalTimer) {
+            clearInterval(this.WorkIntervalTimer);
         }
     }
 
