@@ -2,17 +2,18 @@
     "name": "Ease Your Eyes",
     "msgUnlock": "Welcome back!",
     "setting": {
+        "msgMinTime": "At least 10 seconds!",
         "enabled": {
             "title": "Enable Function",
             "text": "Enable Countdown"
         },
         "workTime": {
             "title": "Work Duration",
-            "text": "Screen-on Time, in seconds"
+            "text": "Screen-on Time, in seconds; at least 10 sec"
         },
         "lockTime": {
             "title": "Screen-off Duration",
-            "text": "In seconds"
+            "text": "In seconds; ; at least 10 sec"
         },
         "save": {
             "title": "Save Settings",
