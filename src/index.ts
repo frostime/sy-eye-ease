@@ -12,6 +12,7 @@ const STORAGE_NAME = "eye-config.json";
 const ENABLED = true;
 const WORK_TIME = 30 * 60; // seconds
 const LOCK_TIME = 3 * 60; // seconds
+const CHECK_SLEEP_INTERVAL = 5 * 60; // 5 minutes, 检查如果电脑休眠了，就暂停
 
 let UnMaskScreenEvent: EventListener;
 export default class PluginSample extends Plugin {
@@ -31,11 +32,19 @@ export default class PluginSample extends Plugin {
             enabled: ENABLED,
             workTime: WORK_TIME,
             lockTime: LOCK_TIME,
+            checkSleepInterva: CHECK_SLEEP_INTERVAL,
         }
+        let defaultConfig = this.data[STORAGE_NAME];
 
         this.initStatusBar();
 
         await this.loadData(STORAGE_NAME);
+        for (let key in defaultConfig) {
+            if (this.data[STORAGE_NAME][key] === undefined) {
+                this.data[STORAGE_NAME][key] = defaultConfig[key];
+            }
+        }
+
         console.log("DataConfig", this.data[STORAGE_NAME]);
         this.status.innerHTML = `${time2String(this.data[STORAGE_NAME].workTime)}`;
 
