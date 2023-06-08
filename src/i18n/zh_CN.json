@@ -2,17 +2,18 @@
     "name": "保护眼睛",
     "msgUnlock": "欢迎回来!",
     "setting": {
+        "msgMinTime": "不得小于 10 秒!",
         "enabled": {
             "title": "启用功能",
             "text": "启用倒计时"
         },
         "workTime": {
             "title": "工作时长",
-            "text": "亮屏时间, 单位秒"
+            "text": "亮屏时间, 单位秒; 至少大于 10 秒"
         },
         "lockTime": {
             "title": "息屏时长",
-            "text": "单位秒"
+            "text": "单位秒; 至少大于 10 秒"
         },
         "save": {
             "title": "保存配置",

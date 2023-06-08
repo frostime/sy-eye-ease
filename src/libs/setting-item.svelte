@@ -62,6 +62,7 @@
             bind:value={settingValue}
             on:change={changed}
             type="number"
+            min="10"
         />
     {:else if type === "button"}
         <!-- Button Input -->

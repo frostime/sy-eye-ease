@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { showMessage } from "siyuan";
     import SettingItem from "./setting-item.svelte";
     import { onMount, onDestroy, createEventDispatcher } from "svelte";
 
@@ -9,6 +10,7 @@
     let enabled: number;
     let workTime: number;
     let lockTime: number;
+    let isValid: boolean = true;
 
     onMount(() => {
         enabled = storage["enabled"];
@@ -26,14 +28,27 @@
                 enabled = value;
                 break;
             case "workTime":
+                if (value < 10) {
+                    isValid = false;
+                    showMessage(i18n.msgMinTime);
+                    return;
+                }
                 workTime = value;
                 break;
             case "lockTime":
+            if (value < 10) {
+                    isValid = false;
+                    showMessage(i18n.msgMinTime);
+                    return;
+                }
                 lockTime = value;
                 break;
         }
     }
     function doUpdateSetting() {
+        if (!isValid) {
+            return;
+        }
         distpatch("changed", {
             enabled: enabled,
             workTime: workTime,
