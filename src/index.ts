@@ -128,9 +128,10 @@ export default class PluginSample extends Plugin {
         }, this.WorkTimeRemains);
 
         //2. 显示倒计时
+        const deadline = (new Date()).getTime() + this.WorkTimeRemains;
         this.status.innerHTML = `${time2String(this.WorkTimeRemains / 1000)}`;
         this.WorkIntervalTimer = setInterval(() => {
-            this.WorkTimeRemains -= 1000;
+            this.WorkTimeRemains = deadline - (new Date()).getTime()
             if (this.WorkTimeRemains <= 0) {
                 this.WorkTimeRemains = 0;
             }
