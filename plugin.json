@@ -2,7 +2,7 @@
   "name": "sy-eye-ease",
   "author": "frostime",
   "url": "https://github.com/frostime/sy-eye-ease",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "minAppVersion": "2.8.10",
   "backends": ["windows", "linux", "darwin"],
   "frontends": ["desktop", "mobile-browser"],
