@@ -15,7 +15,6 @@
         const deadline = (new Date()).getTime() + timeRemains;
         timer = setInterval(() => {
             timeRemains = (deadline - (new Date()).getTime());
-            console.log("timer", timeRemains);
             if (timeRemains < 0) {
                 timeRemains = 0;
             }

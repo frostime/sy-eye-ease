@@ -73,7 +73,8 @@ class LockCoutingState extends State {
             }
             this.statusBar.innerHTML = `${time2String(this.WorkTimeRemains / 1000)}`;
         }, 1000);
-        this.onAnyOperation();
+        console.log('Timer', this.WorkIntervalTimer);
+        // this.onAnyOperation();
     }
 
     close() {
@@ -210,6 +211,7 @@ export class StatesContext {
         maskingState.init();
         
         let enabled = this.getSetting('enabled');
+        this.state = null;
         if (!enabled) {
             this.transitionTo('Disabled');
         } else {
@@ -217,6 +219,9 @@ export class StatesContext {
         }
     }
 
+    /**
+     * 为例避免重复切换状态, 故而检查
+     */
     transitionTo(state: ConcreteState) {
         let nextState = this.allStates.get(state);
         if (nextState !== this.state) {
