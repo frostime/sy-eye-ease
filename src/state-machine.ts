@@ -86,7 +86,6 @@ class LockCoutingState extends State {
     }
 
     doTransition(to: 'Masking' | 'Pausing') {
-        console.log(`切换到 ${to} 状态`);
         this.close();
         if (to === 'Masking') {
             this.resetTime();
@@ -149,9 +148,8 @@ class MaskingState extends State {
      * 显示 svelte 的遮罩, 并在结束后自动切换到 LockCouting 状态
      */
     start() {
-        console.log("开始锁屏");
-        this.mask.restart(this.lockTime);
         this.toggle(true);
+        this.mask.restart(this.lockTime);
         this.mask.$on("unmask", () => this.doTransition());
         document.body.appendChild(this.maskDiv);
     }
@@ -222,6 +220,7 @@ export class StatesContext {
     transitionTo(state: ConcreteState) {
         let nextState = this.allStates.get(state);
         if (nextState !== this.state) {
+            console.log(`切换状态: ${this.state} -> ${state}`);
             this.state = nextState;
             this.state.start();
         }
