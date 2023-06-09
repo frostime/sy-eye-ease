@@ -22,7 +22,6 @@ export default class PluginSample extends Plugin {
     status: HTMLDivElement
 
     WorkTimeRemains: number = 0;
-    WorkTimeoutTimer: any;
     WorkIntervalTimer: any;
 
     async onload() {
@@ -107,9 +106,6 @@ export default class PluginSample extends Plugin {
      * 停止所有计时器
      */
     private resetAll() {
-        if (this.WorkTimeoutTimer) {
-            clearTimeout(this.WorkTimeoutTimer);
-        }
         if (this.WorkIntervalTimer) {
             clearInterval(this.WorkIntervalTimer);
         }
@@ -122,10 +118,9 @@ export default class PluginSample extends Plugin {
         }
 
         //1. X 秒后锁屏
-        this.WorkTimeRemains = this.data[STORAGE_NAME].workTime * 1000;
-        this.WorkTimeoutTimer = setTimeout(() => {
-            this.doMaskScreen();
-        }, this.WorkTimeRemains);
+        if (this.WorkTimeRemains <= 0) {
+            this.WorkTimeRemains = this.data[STORAGE_NAME].workTime * 1000;
+        }
 
         //2. 显示倒计时
         const deadline = (new Date()).getTime() + this.WorkTimeRemains;
@@ -134,6 +129,7 @@ export default class PluginSample extends Plugin {
             this.WorkTimeRemains = deadline - (new Date()).getTime()
             if (this.WorkTimeRemains <= 0) {
                 this.WorkTimeRemains = 0;
+                this.doMaskScreen();
             }
             this.status.innerHTML = `${time2String(this.WorkTimeRemains / 1000)}`;
         }, 1000);
