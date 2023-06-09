@@ -40,7 +40,7 @@ export default class PluginSample extends Plugin {
             enabled: ENABLED,
             workTime: WORK_TIME,
             lockTime: LOCK_TIME,
-            pausOnRest: false,
+            pauseOnRest: false,
             checkRestInterval: CHECK_REST_INTERVAL,
         }
         let defaultConfig = this.data[STORAGE_NAME];
@@ -160,6 +160,12 @@ export default class PluginSample extends Plugin {
             }
             this.status.innerHTML = `${time2String(this.WorkTimeRemains / 1000)}`;
         }, 1000);
+    }
+
+    private doPause() {
+        if (this.WorkIntervalTimer) {
+            clearInterval(this.WorkIntervalTimer);
+        }
     }
 
     private doMaskScreen() {
