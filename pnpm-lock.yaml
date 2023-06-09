@@ -11,6 +11,7 @@ specifiers:
   sass: ^1.62.1
   siyuan: ^0.7.2
   svelte: ^3.57.0
+  sy-plugin-changelog: 0.0.5-patch
   ts-node: ^10.9.1
   typescript: ^5.0.4
   vite: ^4.3.7
@@ -28,6 +29,7 @@ devDependencies:
   sass: 1.62.1
   siyuan: 0.7.2
   svelte: 3.59.1
+  sy-plugin-changelog: 0.0.5-patch
   ts-node: 10.9.1_damrkshojdiumlcmdowz44ss6u
   typescript: 5.1.3
   vite: 4.3.9_kxkosmzevect5blmp7ly2aqtpa
@@ -810,6 +812,10 @@ packages:
   /svelte/3.59.1:
     resolution: {integrity: sha512-pKj8fEBmqf6mq3/NfrB9SLtcJcUvjYSWyePlfCqN9gujLB25RitWK8PvFzlwim6hD/We35KbPlRteuA6rnPGcQ==}
     engines: {node: '>= 8'}
+    dev: true
+
+  /sy-plugin-changelog/0.0.5-patch:
+    resolution: {integrity: sha512-lYptRCUUDPxI524EnutHpn6au6NQ4xg2yUmMv5pZeyEtLEiIwqriI9jgs4hvoiCAoBQ4lvw3SujdVki43kuqtQ==}
     dev: true
 
   /to-regex-range/5.0.1:
