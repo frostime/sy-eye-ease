@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { createEventDispatcher, onMount } from "svelte";
+    import { createEventDispatcher } from "svelte";
 
     import { unlock } from './svg';
     import { time2String } from './utils';
@@ -7,6 +7,10 @@
     const dispatch = createEventDispatcher();
 
     export let timeRemains = 60 * 5; // 倒计时剩余时间，单位：秒
+    export function reset(timeRemains: number) {
+        timeRemains = timeRemains;
+    }
+
     let timeStr: string;
 
     const deadline = (new Date()).getTime() + timeRemains * 1000;
@@ -15,18 +19,12 @@
         if (timeRemains < 0) {
             timeRemains = 0;
         }
-        timeStr = time2String(timeRemains);
-        console.log(timeRemains, timeStr);
     }, 1000);
 
     $: if (timeRemains === 0) {
         unMaskScreen();
     }
-
-    onMount(() => {
-        timeStr = time2String(timeRemains);
-    });
-
+    $: timeStr = time2String(timeRemains);
     export function unMaskScreen() {
         dispatch("unmask");
         clearInterval(timer);

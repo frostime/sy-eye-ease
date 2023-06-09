@@ -1,8 +1,8 @@
 export function time2String(time: number) {
-    time = Math.round(time);
+    // time = Math.round(time);
     let hour = Math.floor(time / 3600);
     let minute = Math.floor((time % 3600) / 60);
-    let second = (time % 60);
+    let second = Math.ceil(time % 60);
     let timeArr = [];
     if (hour > 0) {
         timeArr.push(hour.toString().padStart(2, "0"));
