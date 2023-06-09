@@ -17,6 +17,8 @@ const LOCK_TIME = 3 * 60; // seconds
 const CHECK_SLEEP_INTERVAL = 5 * 60; // 5 minutes, 检查如果电脑休眠了，就暂停
 
 let UnMaskScreenEvent: EventListener;
+let WsEvent: EventListener;
+
 export default class PluginSample extends Plugin {
 
     maskDiv: HTMLDivElement;
@@ -25,9 +27,11 @@ export default class PluginSample extends Plugin {
 
     WorkTimeRemains: number = 0;
     WorkIntervalTimer: any;
+    RestTimer: any; //休息时间段
 
     async onload() {
         UnMaskScreenEvent = () => this.doUnmaskScreen();
+        WsEvent = (args: any) => this.onWsEvent(args);
 
         this.data[STORAGE_NAME] = {
             enabled: ENABLED,
@@ -63,6 +67,10 @@ export default class PluginSample extends Plugin {
         }
         this.resetAll();
         this.saveData(STORAGE_NAME, this.data[STORAGE_NAME]);
+    }
+
+    onWsEvent({ detail }) {
+        console.log("onWsEvent", detail);
     }
 
     openSetting(): void {
