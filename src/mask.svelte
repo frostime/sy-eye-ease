@@ -9,11 +9,11 @@
     export let timeRemains = 60 * 5; // 倒计时剩余时间，单位：秒
     let timeStr: string;
 
+    const deadline = (new Date()).getTime() + timeRemains * 1000;
     let timer = setInterval(() => {
-        timeRemains--;
-        if (timeRemains === 0) {
-            clearInterval(timer);
-            dispatch("unmask");
+        timeRemains = (deadline - (new Date()).getTime()) / 1000 | 0;
+        if (timeRemains < 0) {
+            timeRemains = 0;
         }
     }, 1000);
 
