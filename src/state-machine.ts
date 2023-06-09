@@ -4,8 +4,8 @@ import EyePlugin from ".";
 import { showMessage } from "siyuan";
 
 class State {
-    context: Context;
-    constructor(context: Context) {
+    context: StatesContext;
+    constructor(context: StatesContext) {
         this.context = context;
     }
 
@@ -141,7 +141,7 @@ class MaskingState extends State {
 
 type ConcreteState = 'Disabled' | 'LockCouting' | 'Pausing' | 'Masking';
 
-class Context {
+export class StatesContext {
     state: State;
     allStates: Map<ConcreteState, State> = new Map();
     plugin: EyePlugin;
@@ -160,7 +160,7 @@ class Context {
     /**
      * 根据设置信息初始化状态
      */
-    initState() {
+    init() {
         let lockCoutingState = <LockCoutingState>this.allStates.get('LockCouting');
         lockCoutingState.init();
         let maskingState = <MaskingState>this.allStates.get('Masking');
