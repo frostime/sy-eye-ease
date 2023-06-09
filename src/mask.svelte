@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { createEventDispatcher } from "svelte";
+    import { createEventDispatcher, onMount } from "svelte";
 
     import { unlock } from './svg';
     import { time2String } from './utils';
@@ -15,13 +15,17 @@
         if (timeRemains < 0) {
             timeRemains = 0;
         }
+        timeStr = time2String(timeRemains);
+        console.log(timeRemains, timeStr);
     }, 1000);
 
     $: if (timeRemains === 0) {
         unMaskScreen();
     }
 
-    $: timeStr = time2String(timeRemains);
+    onMount(() => {
+        timeStr = time2String(timeRemains);
+    });
 
     export function unMaskScreen() {
         dispatch("unmask");
