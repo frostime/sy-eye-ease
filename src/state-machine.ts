@@ -132,7 +132,7 @@ class MaskingState extends State {
         this.mask = new Mask({
             target: this.maskDiv,
             props: {
-                timeRemains: this.lockTime,
+                timeRemains: this.lockTime * 1000,
             },
         });
         document.body.appendChild(this.maskDiv);
@@ -149,7 +149,7 @@ class MaskingState extends State {
      */
     start() {
         this.toggle(true);
-        this.mask.restart(this.lockTime);
+        this.mask.restart(this.lockTime * 1000);
         this.mask.$on("unmask", () => this.doTransition());
         document.body.appendChild(this.maskDiv);
     }

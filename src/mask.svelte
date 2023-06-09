@@ -6,15 +6,16 @@
 
     const dispatch = createEventDispatcher();
 
-    export let timeRemains = 60 * 5; // 倒计时剩余时间，单位：秒
+    export let timeRemains; // 倒计时剩余时间，单位：毫秒
     let timer: any;
     let timeStr: string;
 
     export function restart(lockTime: number) {
         timeRemains = lockTime;
-        const deadline = (new Date()).getTime() + timeRemains * 1000;
+        const deadline = (new Date()).getTime() + timeRemains;
         timer = setInterval(() => {
-            timeRemains = (deadline - (new Date()).getTime()) / 1000 | 0;
+            timeRemains = (deadline - (new Date()).getTime());
+            console.log("timer", timeRemains);
             if (timeRemains < 0) {
                 timeRemains = 0;
             }
@@ -32,7 +33,7 @@
     $: if (timeRemains === 0) {
         unMaskScreen();
     }
-    $: timeStr = time2String(timeRemains);
+    $: timeStr = time2String(timeRemains / 1000);
 
 </script>
 
