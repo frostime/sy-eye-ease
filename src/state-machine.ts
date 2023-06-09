@@ -79,15 +79,13 @@ class LockCoutingState extends State {
         if (this.WorkIntervalTimer) {
             clearInterval(this.WorkIntervalTimer);
         }
-    }
-
-    doTransition(to: 'Masking' | 'Pausing') {
-        if (this.WorkIntervalTimer) {
-            clearInterval(this.WorkIntervalTimer);
-        }
         if (DebounceTimer) {
             clearTimeout(DebounceTimer);
         }
+    }
+
+    doTransition(to: 'Masking' | 'Pausing') {
+        this.close();
         if (to === 'Masking') {
             this.resetTime();
             this.context.transitionTo('Masking');
