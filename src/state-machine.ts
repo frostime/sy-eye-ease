@@ -30,7 +30,7 @@ class LockCoutingState extends State {
     statusBar: HTMLDivElement;
     pauseOnRest: boolean = false;
 
-    constructor(context: Context) {
+    constructor(context: StatesContext) {
         super(context);
     }
 
