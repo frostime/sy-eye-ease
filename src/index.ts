@@ -53,7 +53,7 @@ export default class PluginSample extends Plugin {
 
         this.saveData(STORAGE_NAME, this.data[STORAGE_NAME]);
 
-        changelog(this, 'i18n/CHANGELOG.md');
+        // changelog(this, 'i18n/CHANGELOG.md');
     }
 
     onunload(): void {
