@@ -22,7 +22,7 @@ let UnMaskScreenEvent: EventListener;
 let AnyOpEvent: EventListener;
 
 
-export default class PluginSample extends Plugin {
+export default class EyePlugin extends Plugin {
 
     maskDiv: HTMLDivElement;
     mask: Mask;
