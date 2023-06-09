@@ -15,6 +15,14 @@
             "title": "Screen-off Duration",
             "text": "In seconds; ; at least 10 sec"
         },
+        "pauseOnRest": {
+            "title": "Automatic Pause",
+            "text": "Automatically pauses the timer if SiYuan is not used for a long time"
+        },
+        "checkRestInterval": {
+            "title": "Pause Wait Time",
+            "text": "Duration in seconds; if SiYuan is not used for more than this time, the timer will be automatically paused"
+        },
         "save": {
             "title": "Save Settings",
             "text": ""
