@@ -38,6 +38,7 @@ class LockCoutingState extends State {
         this.statusBar = this.context.plugin.status;
         this.WorkTimeRemains = this.context.plugin.data[STORAGE_NAME].workTime * 1000;
         this.pauseOnRest = this.context.plugin.data[STORAGE_NAME].pauseOnRest;
+        this.statusBar.innerHTML = `${time2String(this.WorkTimeRemains / 1000)}`;
         this.close();
     }
 
