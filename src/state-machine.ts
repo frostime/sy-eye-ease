@@ -38,6 +38,11 @@ class LockCoutingState extends State {
         this.statusBar = this.context.plugin.status;
         this.WorkTimeRemains = this.context.plugin.data[STORAGE_NAME].workTime * 1000;
         this.pauseOnRest = this.context.plugin.data[STORAGE_NAME].pauseOnRest;
+        this.close();
+    }
+
+    resetTime() {
+        this.WorkTimeRemains = this.context.plugin.data[STORAGE_NAME].workTime * 1000;
     }
 
     /**
@@ -62,10 +67,11 @@ class LockCoutingState extends State {
     }
 
     doTransition(to: 'Masking' | 'Pausing') {
+        if (this.WorkIntervalTimer) {
+            clearInterval(this.WorkIntervalTimer);
+        }
         if (to === 'Masking') {
-            if (this.WorkIntervalTimer) {
-                clearInterval(this.WorkIntervalTimer);
-            }
+            this.resetTime();
             this.context.transitionTo('Masking');
         } else if (to === 'Pausing') {
             this.context.transitionTo('Pausing');
@@ -105,6 +111,7 @@ class MaskingState extends State {
 
     init() {
         this.lockTime = this.context.plugin.data[STORAGE_NAME].lockTime;
+        this.close();
     }
 
     /**
@@ -126,7 +133,9 @@ class MaskingState extends State {
         if (this.maskDiv) {
             this.mask.$destroy();
         }
-        this.maskDiv.remove();
+        if (this.maskDiv && this.maskDiv.parentNode) {
+            this.maskDiv.remove();
+        }
     }
 
     doTransition(): void {
@@ -145,16 +154,18 @@ export class StatesContext {
     state: State;
     allStates: Map<ConcreteState, State> = new Map();
     plugin: EyePlugin;
-    setting: any;
 
     constructor(plugin: EyePlugin) {
         this.plugin = plugin;
-        this.setting = plugin.data['eye-config.json'];
 
         this.allStates.set('Disabled', new DisabledState(this));
         this.allStates.set('LockCouting', new LockCoutingState(this));
         this.allStates.set('Pausing', new PausingState(this));
         this.allStates.set('Masking', new MaskingState(this));
+    }
+
+    getSetting(key) {
+        return this.plugin.data['eye-config.json'][key];
     }
 
     /**
@@ -165,8 +176,9 @@ export class StatesContext {
         lockCoutingState.init();
         let maskingState = <MaskingState>this.allStates.get('Masking');
         maskingState.init();
-
-        if (!this.setting.enabled) {
+        
+        let enabled = this.getSetting('enabled');
+        if (!enabled) {
             this.transitionTo('Disabled');
         } else {
             this.transitionTo('LockCouting');
