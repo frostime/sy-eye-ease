@@ -98,19 +98,6 @@ export default class EyePlugin extends Plugin {
         }
 
         this.states.onAnyOperation();
-
-        // //如果不启用, 就不管了
-        // if (!this.data[STORAGE_NAME].enabled) {
-        //     return;
-        // }
-
-        // if (this.IsResting) {
-        //     console.log("恢复操作");
-        //     this.IsResting = false;
-        //     this.startLockCountdown();
-        // } else {
-        //     this.waitToDoRest();
-        // }
     }
 
     openSetting(): void {
@@ -152,75 +139,4 @@ export default class EyePlugin extends Plugin {
             this.openSetting();
         });
     }
-
-    // /**
-    //  * 停止所有计时器
-    //  */
-    // private resetTimer() {
-    //     if (this.WorkIntervalTimer) {
-    //         clearInterval(this.WorkIntervalTimer);
-    //     }
-    //     this.status.innerHTML = `${time2String(this.data[STORAGE_NAME].workTime)}`;
-    // }
-
-    // private startLockCountdown() {
-    //     if (!this.data[STORAGE_NAME].enabled) {
-    //         return;
-    //     }
-
-    //     //1. X 秒后锁屏
-    //     if (this.WorkTimeRemains <= 0) {
-    //         this.WorkTimeRemains = this.data[STORAGE_NAME].workTime * 1000;
-    //     }
-
-    //     //2. 显示倒计时
-    //     const deadline = (new Date()).getTime() + this.WorkTimeRemains;
-    //     this.status.innerHTML = `${time2String(this.WorkTimeRemains / 1000)}`;
-    //     this.WorkIntervalTimer = setInterval(() => {
-    //         this.WorkTimeRemains = deadline - (new Date()).getTime()
-    //         if (this.WorkTimeRemains <= 0) {
-    //             this.WorkTimeRemains = 0;
-    //             this.doMaskScreen();
-    //         }
-    //         this.status.innerHTML = `${time2String(this.WorkTimeRemains / 1000)}`;
-    //     }, 1000);
-    // }
-
-    // private waitToDoRest() {
-    //     debounce(() => {console.log("长时间无操作, 进入休息模式"); this.doRest()}, 20 * 1000)();
-    // }
-
-    // private doRest() {
-    //     console.log("开始休眠");
-    //     this.IsResting = true;
-    //     if (this.WorkIntervalTimer) {
-    //         clearInterval(this.WorkIntervalTimer);
-    //     }
-    // }
-
-    // private doMaskScreen() {
-    //     this.maskDiv = document.createElement("div");
-    //     this.mask = new Mask({
-    //         target: this.maskDiv,
-    //         props: {
-    //             timeRemains: this.data[STORAGE_NAME].lockTime,
-    //         },
-    //     });
-    //     this.mask.$on("unmask", UnMaskScreenEvent);
-    //     document.body.appendChild(this.maskDiv);
-    //     //close timer
-    //     if (this.WorkIntervalTimer) {
-    //         clearInterval(this.WorkIntervalTimer);
-    //     }
-    // }
-
-    // private doUnmaskScreen() {
-    //     showMessage(this.i18n.msgUnlock, 5000);
-    //     if (this.maskDiv) {
-    //         this.mask.$destroy();
-    //         document.body.removeChild(this.maskDiv);
-    //         //继续开始新的计时
-    //         this.startLockCountdown();
-    //     }
-    // }
 }
