@@ -29,6 +29,7 @@ class LockCoutingState extends State {
     WorkIntervalTimer: any;
     statusBar: HTMLDivElement;
     pauseOnRest: boolean = false;
+    checkRestInterval: number;
 
     constructor(context: StatesContext) {
         super(context);
@@ -39,6 +40,7 @@ class LockCoutingState extends State {
         this.WorkTimeRemains = this.context.plugin.data[STORAGE_NAME].workTime * 1000;
         this.pauseOnRest = this.context.plugin.data[STORAGE_NAME].pauseOnRest;
         this.statusBar.innerHTML = `${time2String(this.WorkTimeRemains / 1000)}`;
+        this.checkRestInterval = this.context.plugin.data[STORAGE_NAME].checkRestInterval * 1000;
         this.close();
     }
 
@@ -59,6 +61,7 @@ class LockCoutingState extends State {
             }
             this.statusBar.innerHTML = `${time2String(this.WorkTimeRemains / 1000)}`;
         }, 1000);
+        this.onAnyOperation();
     }
 
     close() {
@@ -90,7 +93,7 @@ class LockCoutingState extends State {
             () => {
                 console.log("长时间无操作, 进入休息模式");
                 this.doTransition('Pausing');
-            }, 20 * 1000
+            }, this.checkRestInterval
         )();
     }
 }
