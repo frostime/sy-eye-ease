@@ -125,15 +125,8 @@ class MaskingState extends State {
     maskDiv: HTMLDivElement;
     mask: Mask;
 
-    init() {
-        this.lockTime = this.context.plugin.data[STORAGE_NAME].lockTime;
-        this.close();
-    }
-
-    /**
-     * 显示 svelte 的遮罩, 并在结束后自动切换到 LockCouting 状态
-     */
-    start() {
+    constructor(context: StatesContext) {
+        super(context);
         this.maskDiv = document.createElement("div");
         this.mask = new Mask({
             target: this.maskDiv,
@@ -141,6 +134,22 @@ class MaskingState extends State {
                 timeRemains: this.lockTime,
             },
         });
+        document.body.appendChild(this.maskDiv);
+        this.toggle(false);
+    }
+
+    init() {
+        this.lockTime = this.context.plugin.data[STORAGE_NAME].lockTime;
+        this.toggle(false);
+    }
+
+    /**
+     * 显示 svelte 的遮罩, 并在结束后自动切换到 LockCouting 状态
+     */
+    start() {
+        console.log("开始锁屏");
+        this.toggle(true);
+        this.mask.restart(this.lockTime);
         this.mask.$on("unmask", () => this.doTransition());
         document.body.appendChild(this.maskDiv);
     }
@@ -154,11 +163,18 @@ class MaskingState extends State {
         }
     }
 
+    toggle(show=true) {
+        if (show) {
+            this.maskDiv.style.display = "block";
+        } else {
+            this.maskDiv.style.display = "none";
+        }
+    }
+
     doTransition(): void {
         showMessage(this.context.plugin.i18n.msgUnlock, 5000);
         if (this.maskDiv) {
-            this.mask.$destroy();
-            document.body.removeChild(this.maskDiv);
+            this.toggle(false);
             this.context.transitionTo('LockCouting'); //自动切换到工作状态
         }
     }
