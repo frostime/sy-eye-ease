@@ -6,7 +6,7 @@ import "./index.scss";
 
 import Mask from "./mask.svelte";
 import SettingPanel from "./libs/setting-panel.svelte";
-import { debounce, time2String } from "./utils";
+import { time2String } from "./utils";
 import { StatesContext } from "./state-machine";
 
 import { changelog } from "sy-plugin-changelog";

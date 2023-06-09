@@ -1,4 +1,4 @@
-import { time2String, debounce } from "./utils";
+import { time2String } from "./utils";
 import Mask from "./mask.svelte";
 import EyePlugin from ".";
 import { showMessage } from "siyuan";
@@ -22,6 +22,17 @@ class DisabledState extends State {
 }
 
 const STORAGE_NAME = "eye-config.json";
+
+
+let DebounceTimer: any = null;
+
+function debounce<T extends Function>(cb: T, wait = 20) {
+    let callable = (...args: any) => {
+        clearTimeout(DebounceTimer);
+        DebounceTimer = setTimeout(() => cb(...args), wait);
+    };
+    return <T>(<any>callable);
+}
 
 class LockCoutingState extends State {
 
@@ -73,6 +84,9 @@ class LockCoutingState extends State {
     doTransition(to: 'Masking' | 'Pausing') {
         if (this.WorkIntervalTimer) {
             clearInterval(this.WorkIntervalTimer);
+        }
+        if (DebounceTimer) {
+            clearTimeout(DebounceTimer);
         }
         if (to === 'Masking') {
             this.resetTime();
