@@ -6,15 +6,17 @@ import "./index.scss";
 
 import Mask from "./mask.svelte";
 import SettingPanel from "./libs/setting-panel.svelte";
-import { time2String } from "./utils";
+import { debounce, time2String } from "./utils";
 
 import { changelog } from "sy-plugin-changelog";
 
+type seconds = number;
+
 const STORAGE_NAME = "eye-config.json";
 const ENABLED = true;
-const WORK_TIME = 30 * 60; // seconds
-const LOCK_TIME = 3 * 60; // seconds
-const CHECK_REST_INTERVAL = 5 * 60; // 5 minutes, 检查如果电脑休眠了，就暂停
+const WORK_TIME: seconds = 30 * 60; // seconds
+const LOCK_TIME: seconds = 3 * 60; // seconds
+const CHECK_REST_INTERVAL: seconds = 5 * 60; // 5 minutes, 检查如果电脑休眠了，就暂停
 
 let UnMaskScreenEvent: EventListener;
 let AnyOpEvent: EventListener;
@@ -29,6 +31,7 @@ export default class PluginSample extends Plugin {
     WorkTimeRemains: number = 0;
     WorkIntervalTimer: any;
     RestTimer: any; //休息时间段
+    IsResting = false; //是否正在休息
 
     EventToTrack: TEventBus[] = ['ws-main', 'click-editorcontent'];
 
@@ -82,10 +85,22 @@ export default class PluginSample extends Plugin {
     }
 
     onAnyOperation(args) {
-        if (args?.detail.cmd === 'backgroundtask') {
+        //如果不启用, 就不管了
+        if (!this.data[STORAGE_NAME].enabled) {
             return;
         }
-        console.log("OnAnyOperation", args);
+
+        if (args?.detail.cmd === 'backgroundtask' || args?.detail.cmd === "statusbar") {
+            return;
+        }
+
+        if (this.IsResting) {
+            console.log("恢复操作");
+            this.IsResting = false;
+            this.startLockCountdown();
+        } else {
+            this.waitToDoRest();
+        }
     }
 
     openSetting(): void {
@@ -162,7 +177,13 @@ export default class PluginSample extends Plugin {
         }, 1000);
     }
 
-    private doPause() {
+    private waitToDoRest() {
+        debounce(() => {console.log("长时间无操作, 进入休息模式"); this.doRest()}, 20 * 1000)();
+    }
+
+    private doRest() {
+        console.log("开始休眠");
+        this.IsResting = true;
         if (this.WorkIntervalTimer) {
             clearInterval(this.WorkIntervalTimer);
         }

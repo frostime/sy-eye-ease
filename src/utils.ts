@@ -11,34 +11,12 @@ export function time2String(time: number) {
     return timeArr.join(":");
 }
 
-export function debounce<T extends (...args: any[]) => void>(
-    callback: T,
-    wait: number,
-    immediate = false,
-) {
-    // This is a number in the browser and an object in Node.js,
-    // so we'll use the ReturnType utility to cover both cases.
-    let timeout: ReturnType<typeof setTimeout> | null;
+let DebounceTimer: any = null;
 
-    return function <U>(this: U, ...args: Parameters<typeof callback>) {
-        const context = this;
-        const later = () => {
-            timeout = null;
-
-            if (!immediate) {
-                callback.apply(context, args);
-            }
-        };
-        const callNow = immediate && !timeout;
-
-        if (typeof timeout === "number") {
-            clearTimeout(timeout);
-        }
-
-        timeout = setTimeout(later, wait);
-
-        if (callNow) {
-            callback.apply(context, args);
-        }
+export function debounce<T extends Function>(cb: T, wait = 20) {
+    let callable = (...args: any) => {
+        clearTimeout(DebounceTimer);
+        DebounceTimer = setTimeout(() => cb(...args), wait);
     };
+    return <T>(<any>callable);
 }
