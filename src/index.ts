@@ -8,6 +8,8 @@ import Mask from "./mask.svelte";
 import SettingPanel from "./libs/setting-panel.svelte";
 import { time2String } from "./utils";
 
+import { changelog } from "sy-plugin-changelog";
+
 const STORAGE_NAME = "eye-config.json";
 const ENABLED = true;
 const WORK_TIME = 30 * 60; // seconds
@@ -50,6 +52,8 @@ export default class PluginSample extends Plugin {
         this.startLockCountdown();
 
         this.saveData(STORAGE_NAME, this.data[STORAGE_NAME]);
+
+        changelog(this, 'i18n/CHANGELOG.md');
     }
 
     onunload(): void {
