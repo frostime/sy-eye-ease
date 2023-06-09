@@ -68,6 +68,7 @@ class LockCoutingState extends State {
             this.WorkTimeRemains = deadline - (new Date()).getTime()
             if (this.WorkTimeRemains <= 0) {
                 this.WorkTimeRemains = 0;
+                clearInterval(this.WorkIntervalTimer);
                 this.doTransition('Masking'); //自动切换到锁屏状态
             }
             this.statusBar.innerHTML = `${time2String(this.WorkTimeRemains / 1000)}`;
@@ -85,6 +86,7 @@ class LockCoutingState extends State {
     }
 
     doTransition(to: 'Masking' | 'Pausing') {
+        console.log(`切换到 ${to} 状态`);
         this.close();
         if (to === 'Masking') {
             this.resetTime();
@@ -148,8 +150,8 @@ class MaskingState extends State {
      */
     start() {
         console.log("开始锁屏");
-        this.toggle(true);
         this.mask.restart(this.lockTime);
+        this.toggle(true);
         this.mask.$on("unmask", () => this.doTransition());
         document.body.appendChild(this.maskDiv);
     }
@@ -218,8 +220,11 @@ export class StatesContext {
     }
 
     transitionTo(state: ConcreteState) {
-        this.state = this.allStates.get(state);
-        this.state.start();
+        let nextState = this.allStates.get(state);
+        if (nextState !== this.state) {
+            this.state = nextState;
+            this.state.start();
+        }
     }
 
     onAnyOperation() {
