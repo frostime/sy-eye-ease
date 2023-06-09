@@ -1,6 +1,6 @@
 import {
     Dialog,
-    Plugin, showMessage,
+    Plugin, TEventBus, showMessage,
 } from "siyuan";
 import "./index.scss";
 
@@ -17,39 +17,7 @@ const LOCK_TIME = 3 * 60; // seconds
 const CHECK_REST_INTERVAL = 5 * 60; // 5 minutes, 检查如果电脑休眠了，就暂停
 
 let UnMaskScreenEvent: EventListener;
-let WsEvent: EventListener;
-
-function debounce<T extends (...args: any[]) => void>(
-    callback: T,
-    wait: number,
-    immediate = false,
-) {
-    // This is a number in the browser and an object in Node.js,
-    // so we'll use the ReturnType utility to cover both cases.
-    let timeout: ReturnType<typeof setTimeout> | null;
-
-    return function <U>(this: U, ...args: Parameters<typeof callback>) {
-        const context = this;
-        const later = () => {
-            timeout = null;
-
-            if (!immediate) {
-                callback.apply(context, args);
-            }
-        };
-        const callNow = immediate && !timeout;
-
-        if (typeof timeout === "number") {
-            clearTimeout(timeout);
-        }
-
-        timeout = setTimeout(later, wait);
-
-        if (callNow) {
-            callback.apply(context, args);
-        }
-    };
-}
+let AnyOpEvent: EventListener;
 
 
 export default class PluginSample extends Plugin {
@@ -62,16 +30,18 @@ export default class PluginSample extends Plugin {
     WorkIntervalTimer: any;
     RestTimer: any; //休息时间段
 
+    EventToTrack: TEventBus[] = ['ws-main', 'click-editorcontent'];
+
     async onload() {
         UnMaskScreenEvent = () => this.doUnmaskScreen();
-        WsEvent = (args: any) => this.onWsEvent(args);
+        AnyOpEvent = (args: any) => this.onAnyOperation(args);
 
         this.data[STORAGE_NAME] = {
             enabled: ENABLED,
             workTime: WORK_TIME,
             lockTime: LOCK_TIME,
             pausOnRest: false,
-            checkRestInterva: CHECK_REST_INTERVAL,
+            checkRestInterval: CHECK_REST_INTERVAL,
         }
         let defaultConfig = this.data[STORAGE_NAME];
 
@@ -91,6 +61,11 @@ export default class PluginSample extends Plugin {
 
         this.saveData(STORAGE_NAME, this.data[STORAGE_NAME]);
 
+
+        for (let event of this.EventToTrack) {
+            this.eventBus.on(event, AnyOpEvent);
+        }
+
         // changelog(this, 'i18n/CHANGELOG.md');
     }
 
@@ -99,12 +74,18 @@ export default class PluginSample extends Plugin {
             this.mask.$destroy();
             this.maskDiv.remove();
         }
-        this.resetAll();
+        for (let event of this.EventToTrack) {
+            this.eventBus.off(event, AnyOpEvent);
+        }
+        this.resetTimer();
         this.saveData(STORAGE_NAME, this.data[STORAGE_NAME]);
     }
 
-    onWsEvent({ detail }) {
-        console.log("onWsEvent", detail);
+    onAnyOperation(args) {
+        if (args?.detail.cmd === 'backgroundtask') {
+            return;
+        }
+        console.log("OnAnyOperation", args);
     }
 
     openSetting(): void {
@@ -124,12 +105,12 @@ export default class PluginSample extends Plugin {
                 i18n: this.i18n.setting
             }
         });
-        pannel.$on("changed", ({ detail }) => { 
+        pannel.$on("changed", ({ detail }) => {
             // console.log("onSettingChanged", detail);
             dialog.destroy();
             this.data[STORAGE_NAME] = detail;
             this.saveData(STORAGE_NAME, this.data[STORAGE_NAME]);
-            this.resetAll();
+            this.resetTimer();
             this.startLockCountdown();
         });
 
@@ -151,7 +132,7 @@ export default class PluginSample extends Plugin {
     /**
      * 停止所有计时器
      */
-    private resetAll() {
+    private resetTimer() {
         if (this.WorkIntervalTimer) {
             clearInterval(this.WorkIntervalTimer);
         }
