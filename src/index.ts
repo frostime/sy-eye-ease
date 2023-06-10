@@ -1,23 +1,29 @@
 import {
     Dialog,
-    Plugin, showMessage,
+    Plugin, TEventBus, showMessage,
 } from "siyuan";
 import "./index.scss";
 
 import Mask from "./mask.svelte";
 import SettingPanel from "./libs/setting-panel.svelte";
 import { time2String } from "./utils";
+import { StatesContext } from "./state-machine";
 
 import { changelog } from "sy-plugin-changelog";
 
+type seconds = number;
+
 const STORAGE_NAME = "eye-config.json";
 const ENABLED = true;
-const WORK_TIME = 30 * 60; // seconds
-const LOCK_TIME = 3 * 60; // seconds
-const CHECK_SLEEP_INTERVAL = 5 * 60; // 5 minutes, 检查如果电脑休眠了，就暂停
+const WORK_TIME: seconds = 30 * 60; // seconds
+const LOCK_TIME: seconds = 3 * 60; // seconds
+const CHECK_REST_INTERVAL: seconds = 10 * 60; // 5 minutes, 检查如果电脑休眠了，就暂停
 
-let UnMaskScreenEvent: EventListener;
-export default class PluginSample extends Plugin {
+// let UnMaskScreenEvent: EventListener;
+let AnyOpEvent: EventListener;
+
+
+export default class EyePlugin extends Plugin {
 
     maskDiv: HTMLDivElement;
     mask: Mask;
@@ -25,15 +31,23 @@ export default class PluginSample extends Plugin {
 
     WorkTimeRemains: number = 0;
     WorkIntervalTimer: any;
+    RestTimer: any; //休息时间段
+    IsResting = false; //是否正在休息
+
+    states: StatesContext;
+
+    EventToTrack: TEventBus[] = ['ws-main', 'click-editorcontent'];
 
     async onload() {
-        UnMaskScreenEvent = () => this.doUnmaskScreen();
+        // UnMaskScreenEvent = () => this.doUnmaskScreen();
+        AnyOpEvent = (args: any) => this.onAnyOperation(args);
 
         this.data[STORAGE_NAME] = {
             enabled: ENABLED,
             workTime: WORK_TIME,
             lockTime: LOCK_TIME,
-            checkSleepInterva: CHECK_SLEEP_INTERVAL,
+            pauseOnRest: false,
+            checkRestInterval: CHECK_REST_INTERVAL,
         }
         let defaultConfig = this.data[STORAGE_NAME];
 
@@ -49,11 +63,17 @@ export default class PluginSample extends Plugin {
         console.log("DataConfig", this.data[STORAGE_NAME]);
         this.status.innerHTML = `${time2String(this.data[STORAGE_NAME].workTime)}`;
 
-        this.startLockCountdown();
-
         this.saveData(STORAGE_NAME, this.data[STORAGE_NAME]);
 
-        // changelog(this, 'i18n/CHANGELOG.md');
+        this.states = new StatesContext(this);
+        this.states.init();
+
+
+        for (let event of this.EventToTrack) {
+            this.eventBus.on(event, AnyOpEvent);
+        }
+
+        changelog(this, 'i18n/CHANGELOG.md');
     }
 
     onunload(): void {
@@ -61,8 +81,21 @@ export default class PluginSample extends Plugin {
             this.mask.$destroy();
             this.maskDiv.remove();
         }
-        this.resetAll();
+        for (let event of this.EventToTrack) {
+            this.eventBus.off(event, AnyOpEvent);
+        }
+        // this.resetTimer();
+        this.states.close();
         this.saveData(STORAGE_NAME, this.data[STORAGE_NAME]);
+    }
+
+    onAnyOperation(args) {
+
+        if (args?.detail.cmd === 'backgroundtask' || args?.detail.cmd === "statusbar") {
+            return;
+        }
+
+        this.states.onAnyOperation();
     }
 
     openSetting(): void {
@@ -82,13 +115,12 @@ export default class PluginSample extends Plugin {
                 i18n: this.i18n.setting
             }
         });
-        pannel.$on("changed", ({ detail }) => { 
+        pannel.$on("changed", ({ detail }) => {
             // console.log("onSettingChanged", detail);
             dialog.destroy();
             this.data[STORAGE_NAME] = detail;
             this.saveData(STORAGE_NAME, this.data[STORAGE_NAME]);
-            this.resetAll();
-            this.startLockCountdown();
+            this.states.init();
         });
 
     }
@@ -104,64 +136,5 @@ export default class PluginSample extends Plugin {
         statusBar.addEventListener("click", () => {
             this.openSetting();
         });
-    }
-
-    /**
-     * 停止所有计时器
-     */
-    private resetAll() {
-        if (this.WorkIntervalTimer) {
-            clearInterval(this.WorkIntervalTimer);
-        }
-        this.status.innerHTML = `${time2String(this.data[STORAGE_NAME].workTime)}`;
-    }
-
-    private startLockCountdown() {
-        if (!this.data[STORAGE_NAME].enabled) {
-            return;
-        }
-
-        //1. X 秒后锁屏
-        if (this.WorkTimeRemains <= 0) {
-            this.WorkTimeRemains = this.data[STORAGE_NAME].workTime * 1000;
-        }
-
-        //2. 显示倒计时
-        const deadline = (new Date()).getTime() + this.WorkTimeRemains;
-        this.status.innerHTML = `${time2String(this.WorkTimeRemains / 1000)}`;
-        this.WorkIntervalTimer = setInterval(() => {
-            this.WorkTimeRemains = deadline - (new Date()).getTime()
-            if (this.WorkTimeRemains <= 0) {
-                this.WorkTimeRemains = 0;
-                this.doMaskScreen();
-            }
-            this.status.innerHTML = `${time2String(this.WorkTimeRemains / 1000)}`;
-        }, 1000);
-    }
-
-    private doMaskScreen() {
-        this.maskDiv = document.createElement("div");
-        this.mask = new Mask({
-            target: this.maskDiv,
-            props: {
-                timeRemains: this.data[STORAGE_NAME].lockTime,
-            },
-        });
-        this.mask.$on("unmask", UnMaskScreenEvent);
-        document.body.appendChild(this.maskDiv);
-        //close timer
-        if (this.WorkIntervalTimer) {
-            clearInterval(this.WorkIntervalTimer);
-        }
-    }
-
-    private doUnmaskScreen() {
-        showMessage(this.i18n.msgUnlock, 5000);
-        if (this.maskDiv) {
-            this.mask.$destroy();
-            document.body.removeChild(this.maskDiv);
-            //继续开始新的计时
-            this.startLockCountdown();
-        }
     }
 }

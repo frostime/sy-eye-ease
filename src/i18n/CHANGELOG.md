@@ -1,8 +1,9 @@
 ### 保护眼睛版本更新
 
-- Fix: [#6](https://github.com/frostime/sy-eye-ease/pull/6) 计时器走时不准确的问题。现在将思源在后台挂起后, 计时器仍然能够保持正确的走数。
+- 新功能: 长期不操作就挂起计时器; 默认关闭, 可以在设置里面开启这个功能
+- 重构了一下代码
 
 ### Ease You Eyes chagnelog
 
-- Fix: [#6](https://github.com/frostime/sy-eye-ease/pull/6) Addressed the issue of inaccurate timer counting. Now when suspending SiYuan in the background, the timer can still maintain accurate counting.
-
+- New feature: hang timer after long periods of inactivity; disabled by default, can be turned on in settings
+- Refactored code

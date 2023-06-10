@@ -10,12 +10,17 @@
     let enabled: number;
     let workTime: number;
     let lockTime: number;
+    let pauseOnRest: boolean;
+    let checkRestInterval: number;
     let isValid: boolean = true;
 
     onMount(() => {
+        // console.log(storage);
         enabled = storage["enabled"];
         workTime = storage["workTime"];
         lockTime = storage["lockTime"];
+        pauseOnRest = storage["pauseOnRest"];
+        checkRestInterval = storage["checkRestInterval"];
     });
     onDestroy(() => {
         // showMessage("Setting panel closed");
@@ -36,12 +41,23 @@
                 workTime = value;
                 break;
             case "lockTime":
-            if (value < 10) {
+                if (value < 10) {
                     isValid = false;
                     showMessage(i18n.msgMinTime);
                     return;
                 }
                 lockTime = value;
+                break;
+            case "pauseOnRest":
+                pauseOnRest = value;
+                break;
+            case "checkRestInterval":
+                if (value < 10) {
+                    isValid = false;
+                    showMessage(i18n.msgMinTime);
+                    return;
+                }
+                checkRestInterval = value;
                 break;
         }
     }
@@ -53,6 +69,8 @@
             enabled: enabled,
             workTime: workTime,
             lockTime: lockTime,
+            pauseOnRest: pauseOnRest,
+            checkRestInterval: checkRestInterval
         });
     }
 </script>
@@ -86,6 +104,23 @@ with the same UI style in SiYuan
         text={i18n.lockTime.text}
         settingKey="lockTime"
         settingValue={lockTime}
+        placeholder=""
+        on:changed={onChanged}
+    />
+    <SettingItem
+        type="checkbox"
+        title={i18n.pauseOnRest.title}
+        text={i18n.pauseOnRest.text}
+        settingKey="pauseOnRest"
+        settingValue={pauseOnRest}
+        on:changed={onChanged}
+    />
+    <SettingItem
+        type="number"
+        title={i18n.checkRestInterval.title}
+        text={i18n.checkRestInterval.text}
+        settingKey="checkRestInterval"
+        settingValue={checkRestInterval}
         placeholder=""
         on:changed={onChanged}
     />
