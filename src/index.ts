@@ -17,7 +17,7 @@ const STORAGE_NAME = "eye-config.json";
 const ENABLED = true;
 const WORK_TIME: seconds = 30 * 60; // seconds
 const LOCK_TIME: seconds = 3 * 60; // seconds
-const CHECK_REST_INTERVAL: seconds = 5 * 60; // 5 minutes, 检查如果电脑休眠了，就暂停
+const CHECK_REST_INTERVAL: seconds = 10 * 60; // 5 minutes, 检查如果电脑休眠了，就暂停
 
 // let UnMaskScreenEvent: EventListener;
 let AnyOpEvent: EventListener;
@@ -63,8 +63,6 @@ export default class EyePlugin extends Plugin {
         console.log("DataConfig", this.data[STORAGE_NAME]);
         this.status.innerHTML = `${time2String(this.data[STORAGE_NAME].workTime)}`;
 
-        // this.startLockCountdown();
-
         this.saveData(STORAGE_NAME, this.data[STORAGE_NAME]);
 
         this.states = new StatesContext(this);
@@ -75,7 +73,7 @@ export default class EyePlugin extends Plugin {
             this.eventBus.on(event, AnyOpEvent);
         }
 
-        // changelog(this, 'i18n/CHANGELOG.md');
+        changelog(this, 'i18n/CHANGELOG.md');
     }
 
     onunload(): void {

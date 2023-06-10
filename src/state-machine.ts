@@ -74,7 +74,7 @@ class LockCoutingState extends State {
             this.statusBar.innerHTML = `${time2String(this.WorkTimeRemains / 1000)}`;
         }, 1000);
         console.log('Timer', this.WorkIntervalTimer);
-        // this.onAnyOperation();
+        this.onAnyOperation();
     }
 
     close() {
