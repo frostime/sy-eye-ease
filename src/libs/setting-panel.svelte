@@ -15,7 +15,7 @@
     let isValid: boolean = true;
 
     onMount(() => {
-        console.log(storage);
+        // console.log(storage);
         enabled = storage["enabled"];
         workTime = storage["workTime"];
         lockTime = storage["lockTime"];

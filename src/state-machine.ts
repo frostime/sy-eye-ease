@@ -73,7 +73,7 @@ class LockCoutingState extends State {
             }
             this.statusBar.innerHTML = `${time2String(this.WorkTimeRemains / 1000)}`;
         }, 1000);
-        console.log('Timer', this.WorkIntervalTimer);
+        // console.log('Timer', this.WorkIntervalTimer);
         this.onAnyOperation();
     }
 
@@ -225,7 +225,7 @@ export class StatesContext {
     transitionTo(state: ConcreteState) {
         let nextState = this.allStates.get(state);
         if (nextState !== this.state) {
-            console.log(`切换状态: ${this.state} -> ${state}`);
+            // console.log(`切换状态: ${this.state} -> ${state}`);
             this.state = nextState;
             this.state.start();
         }
