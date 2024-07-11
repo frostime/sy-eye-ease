@@ -1,6 +1,6 @@
 import { time2String } from "./utils";
 import Mask from "./mask.svelte";
-import EyePlugin from ".";
+import type EyePlugin from ".";
 import { showMessage } from "siyuan";
 
 class State {

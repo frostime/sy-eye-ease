@@ -1,6 +1,6 @@
 import {
     Dialog,
-    Plugin, TEventBus, showMessage,
+    Plugin, TEventBus
 } from "siyuan";
 import "./index.scss";
 
@@ -9,7 +9,7 @@ import SettingPanel from "./libs/setting-panel.svelte";
 import { time2String } from "./utils";
 import { StatesContext } from "./state-machine";
 
-import { changelog } from "sy-plugin-changelog";
+// import { changelog } from "sy-plugin-changelog";
 
 type seconds = number;
 
@@ -73,7 +73,7 @@ export default class EyePlugin extends Plugin {
             this.eventBus.on(event, AnyOpEvent);
         }
 
-        changelog(this, 'i18n/CHANGELOG.md');
+        // changelog(this, 'i18n/CHANGELOG.md');
     }
 
     onunload(): void {
