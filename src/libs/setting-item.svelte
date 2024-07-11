@@ -99,3 +99,15 @@
         />
     {/if}
 </label>
+
+<style lang="scss">
+    :global(.config__tab-container) .b3-label {
+        box-shadow: none !important;
+        padding-bottom: 16px;
+        margin-bottom: 16px;
+
+        &:not(:last-child) {
+            border-bottom: 1px solid var(--b3-border-color);
+        }
+    }
+</style>

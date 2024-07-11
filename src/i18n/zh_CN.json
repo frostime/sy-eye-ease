@@ -1,6 +1,7 @@
 {
     "name": "保护眼睛",
     "msgUnlock": "欢迎回来!",
+    "msg1min": "1 分钟后熄屏！",
     "setting": {
         "msgMinTime": "不得小于 10 秒!",
         "enabled": {

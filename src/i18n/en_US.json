@@ -1,6 +1,7 @@
 {
     "name": "Ease Your Eyes",
     "msgUnlock": "Welcome back!",
+    "msg1min": "1 min left for locking!",
     "setting": {
         "msgMinTime": "At least 10 seconds!",
         "enabled": {
