@@ -42,6 +42,8 @@ class LockCoutingState extends State {
     pauseOnRest: boolean = false;
     checkRestInterval: number;
 
+    NoticedFor1Min: boolean = false;
+
     constructor(context: StatesContext) {
         super(context);
     }
@@ -57,6 +59,7 @@ class LockCoutingState extends State {
 
     resetTime() {
         this.WorkTimeRemains = this.context.plugin.data[STORAGE_NAME].workTime * 1000;
+        this.NoticedFor1Min = false;
     }
 
     /**
@@ -66,6 +69,12 @@ class LockCoutingState extends State {
         const deadline = (new Date()).getTime() + this.WorkTimeRemains;
         this.WorkIntervalTimer = setInterval(() => {
             this.WorkTimeRemains = deadline - (new Date()).getTime()
+
+            if (this.WorkTimeRemains <= 60 * 1000 && !this.NoticedFor1Min) {
+                this.NoticedFor1Min = true;
+                showMessage(this.context.plugin.i18n.msg1min, 5000);
+            }
+
             if (this.WorkTimeRemains <= 0) {
                 this.WorkTimeRemains = 0;
                 clearInterval(this.WorkIntervalTimer);
